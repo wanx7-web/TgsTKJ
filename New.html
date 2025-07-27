@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Token</title>
+  <style>
+    /* sama persis dengan style kamu tadi */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 15px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+    .container h2 { margin-bottom: 1rem; font-size: 1.8rem; }
+    .container p { font-size: 0.9rem; margin-bottom: 1rem; color: #ddd; }
+    input {
+      width: 100%; padding: 12px; border-radius: 8px;
+      border: none; margin-bottom: 1rem; font-size: 1rem; text-align: center;
+    }
+    button {
+      background: #ffcc00; color: #000; font-size: 1rem;
+      font-weight: bold; border: none; border-radius: 8px;
+      padding: 12px 20px; cursor: pointer; transition: all 0.3s ease; width: 100%;
+    }
+    button:hover { background: #ffb300; }
+    #error-msg { margin-top: 1rem; font-size: 0.9rem; color: #ff6b6b; }
+    footer { margin-top: 2rem; font-size: 0.8rem; color: #ccc; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔑 Login Dengan Token</h2>
+    <p>Masukkan token yang kamu dapat untuk melanjutkan ke form.</p>
+    <input type="text" id="token" placeholder="Masukkan token login...">
+    <button onclick="cekToken()">🔓 Masuk</button>
+    <p id="error-msg"></p>
+    <footer>© 2025 Sistem Token Login</footer>
+  </div>
+
+  <!-- Firebase SDK versi compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <script>
+    // Konfigurasi Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDyZJdS5He9t-gfJFUl5QmbH670fJruu6U",
+      authDomain: "token-login-17579.firebaseapp.com",
+      databaseURL: "https://token-login-17579-default-rtdb.firebaseio.com",
+      projectId: "token-login-17579",
+      storageBucket: "token-login-17579.firebasestorage.app",
+      messagingSenderId: "243282834972",
+      appId: "1:243282834972:web:519cf54951c65ecc7f11d9",
+      measurementId: "G-B82C630V39"
+    };
+
+    // Inisialisasi Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function cekToken() {
+      const token = document.getElementById("token").value.trim();
+      const errorMsg = document.getElementById("error-msg");
+
+      if (token === "") {
+        errorMsg.textContent = "⚠️ Masukkan token terlebih dahulu!";
+        return;
+      }
+
+      const tokenRef = db.ref("tokens/" + token);
+      tokenRef.once("value").then((snapshot) => {
+        if (snapshot.exists()) {
+          // Hapus token agar hangus
+          tokenRef.remove().then(() => {
+            // Redirect ke Jotform
+            window.location.href = "https://form.jotform.com/252041322804040";
+          });
+        } else {
+          errorMsg.textContent = "❌ Token salah atau sudah dipakai!";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
